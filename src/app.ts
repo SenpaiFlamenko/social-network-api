@@ -15,6 +15,7 @@ const mongoUri = process.env.MONGO_URI || 'mongodb://localhost/development-socia
 mongoose.Promise = Promise;
 mongoose.connect(mongoUri);
 mongoose.connection.on('error', (error: Error) => console.log(error));
+mongoose.connection.once('open', () => console.log('Connected to database!'));
 
 app.use(express.json());
 app.use(morgan('common'));

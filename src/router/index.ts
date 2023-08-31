@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { defaultRoute } from './defaultRoute.js';
-import { auth } from '../users/auth.js';
+import { auth } from '../authentication/authentication.js';
 import { posts } from '../posts/posts.js';
-import { users } from '../users/users.js';
+import { users } from '../users/usersRoute.js';
 import { CustomError } from '../errors/errorHandling.js';
 
 export const router = Router();
