@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
+      required: [true, 'Username validation test message'],
       min: 1,
       max: 24,
       unique: true,
@@ -23,19 +23,23 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      min: 6,
       max: 30,
     },
-    name: {
+    firstName: {
       type: String,
-      min: 1,
-      max: 30,
-      unique: true,
+      max: 20,
+      default: '',
+    },
+    lastName: {
+      type: String,
+      max: 20,
+      default: '',
     },
     nickname: {
       type: String,
-      min: 1,
       max: 24,
-      unique: true,
+      default: '',
     },
     friends: {
       type: Array,
