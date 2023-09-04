@@ -12,7 +12,7 @@ auth.post('/register', async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
     //hash password
-    const hashedPassword = hashPassword(password);
+    const hashedPassword = await hashPassword(password);
 
     //create new user
     const newUser = new User({
