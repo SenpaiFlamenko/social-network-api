@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import User from '../model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-// import { validateToken, UserAuthInfoInRequest } from '../../middleware/tokenValidation.js';
+import { hashPassword } from '../../services/passwordHashing.js';
 
 export const auth = Router();
 
@@ -12,8 +12,7 @@ auth.post('/register', async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
     //hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = hashPassword(password);
 
     //create new user
     const newUser = new User({
@@ -53,14 +52,12 @@ auth.post('/login', async (req: Request, res: Response) => {
 
     const accessToken = jwt.sign(
       {
-        user: {
-          id: user.id,
-          username: user.username,
-          role: user.role,
-        },
+        id: user.id,
+        username: user.username,
+        role: user.role,
       },
       secret,
-      { expiresIn: '5m' },
+      { expiresIn: '15m' },
     );
     res.status(200).cookie('access_token', accessToken, { httpOnly: true }).json('Logged in!');
   } catch (err) {
@@ -70,13 +67,9 @@ auth.post('/login', async (req: Request, res: Response) => {
 
 auth.post('/logout', async (req: Request, res: Response) => {
   try {
+    //delete access token from cookies
     res.clearCookie('access_token').status(200).json('Logged out!');
   } catch (err) {
     res.status(500).json(err);
   }
 });
-
-//testing private route
-// auth.get('/protected', validateToken, (req: UserAuthInfoInRequest, res: Response) => {
-//   return res.json({ user: req.user });
-// });

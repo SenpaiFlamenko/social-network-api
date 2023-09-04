@@ -51,7 +51,7 @@ const UserSchema = new mongoose.Schema(
       enum: Role,
     },
   },
-  { timestamps: true },
+  { versionKey: false, timestamps: true },
 );
 
 export default mongoose.model('User', UserSchema);

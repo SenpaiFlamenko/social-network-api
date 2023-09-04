@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import User from './model.js';
 import { validateToken, UserAuthInfoInRequest } from '../middleware/tokenValidation.js';
+import { passwordHashing } from '../services/passwordHashing.js';
 
 export const users = Router();
 
@@ -20,6 +21,13 @@ users.get('/:id', async (req: Request, res: Response) => {
 users.put('/:id', validateToken, async (req: UserAuthInfoInRequest, res: Response) => {
   if (req.params.id === req.user?.id || req.user?.role === 'admin') {
     try {
+      if (req.body.password) {
+        try {
+          req.body.password = await passwordHashing(req.body.password);
+        } catch (err) {
+          return res.status(500).json(err);
+        }
+      }
       await User.findByIdAndUpdate(req.user?.id, {
         $set: req.body,
       });
