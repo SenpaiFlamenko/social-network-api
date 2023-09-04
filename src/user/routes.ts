@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import User from './model.js';
 import { validateToken, UserAuthInfoInRequest } from '../middleware/tokenValidation.js';
-import { passwordHashing } from '../services/passwordHashing.js';
+import { hashPassword } from '../services/passwordHashing.js';
 
 export const users = Router();
 
@@ -23,7 +23,7 @@ users.put('/:id', validateToken, async (req: UserAuthInfoInRequest, res: Respons
     try {
       if (req.body.password) {
         try {
-          req.body.password = await passwordHashing(req.body.password);
+          req.body.password = await hashPassword(req.body.password);
         } catch (err) {
           return res.status(500).json(err);
         }
