@@ -2,10 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 export interface UserPayload {
-  user: { id: string; username: string; role: string };
+  id: string;
+  username: string;
+  role: string;
 }
 export interface UserAuthInfoInRequest extends Request {
-  user: Object;
+  user?: UserPayload;
 }
 const secret = process.env.JWT_SECRET || 'secret';
 

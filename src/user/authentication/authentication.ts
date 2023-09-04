@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import User from '../model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { validateToken } from '../../middleware/tokenValidation.js';
+// import { validateToken, UserAuthInfoInRequest } from '../../middleware/tokenValidation.js';
 
 export const auth = Router();
 
@@ -77,6 +77,6 @@ auth.post('/logout', async (req: Request, res: Response) => {
 });
 
 //testing private route
-auth.get('/protected', <any>validateToken, (req: any, res: Response) => {
-  return res.json({ user: req.user });
-});
+// auth.get('/protected', validateToken, (req: UserAuthInfoInRequest, res: Response) => {
+//   return res.json({ user: req.user });
+// });
