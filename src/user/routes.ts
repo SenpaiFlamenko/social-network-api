@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import User from './model.js';
-import { validateToken, UserAuthInfoInRequest } from '../middleware/tokenValidation.js';
+import { validateToken, AuthenticatedRequest } from '../middleware/tokenValidation.js';
 import { hashPassword } from '../services/passwordHashing.js';
 
 export const users = Router();
@@ -18,30 +18,27 @@ users.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-users.put('/:id', validateToken, async (req: UserAuthInfoInRequest, res: Response) => {
-  if (req.params.id === req.user?.id || req.user?.role === 'admin') {
-    try {
-      if (req.body.password) {
-        try {
-          req.body.password = await hashPassword(req.body.password);
-        } catch (err) {
-          return res.status(500).json(err);
-        }
-      }
-      await User.findByIdAndUpdate(req.user?.id, {
-        $set: req.body,
-      });
-      res.status(200).json('Account has been successfully updated!');
-    } catch (err) {
-      return res.status(500).json(err);
+//@ts-ignore
+users.put('/:id', validateToken, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (req.params.id !== req.user.id || req.user?.role !== 'admin') {
+      return res.status(403).json('You can update only your account!');
     }
-  } else {
-    return res.status(403).json('You can update only your account!');
+    if (req.body.password) {
+      req.body.password = await hashPassword(req.body.password);
+    }
+    await User.findByIdAndUpdate(req.user.id, {
+      $set: req.body,
+    });
+    res.status(200).json('Account has been successfully updated!');
+  } catch (err) {
+    return res.status(500).json(err);
   }
 });
 
-users.delete('/:id', validateToken, async (req: UserAuthInfoInRequest, res: Response) => {
-  if (req.params.id === req.user?.id || req.user?.role === 'admin') {
+//@ts-ignore
+users.delete('/:id', validateToken, async (req: AuthenticatedRequest, res: Response) => {
+  if (req.params.id === req.user.id || req.user.role === 'admin') {
     try {
       await User.findByIdAndDelete(req.params.id);
       res.status(200).json('Account has been deleted');

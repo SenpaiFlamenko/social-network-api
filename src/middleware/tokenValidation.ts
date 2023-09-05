@@ -1,17 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-export interface UserPayload {
+interface UserPayload {
   id: string;
   username: string;
   role: string;
 }
-export interface UserAuthInfoInRequest extends Request {
-  user?: UserPayload;
+export interface AuthenticatedRequest extends Request {
+  user: UserPayload;
 }
+
 const secret = process.env.JWT_SECRET || 'secret';
 
-export const validateToken = async (req: UserAuthInfoInRequest, res: Response, next: NextFunction) => {
+export const validateToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const token = req.cookies.access_token;
   if (!token) {
     return res.status(403).json('User is not authorized or token is missing!');

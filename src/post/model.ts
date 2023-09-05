@@ -15,6 +15,12 @@ const PostSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    comments: [
+      {
+        author: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
+        text: { type: String, max: 500 },
+      },
+    ],
   },
   { versionKey: false, timestamps: true },
 );
