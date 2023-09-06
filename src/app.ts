@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import { router } from './router/index.js';
-import errorHandling, { CustomError } from './errors/errorHandling.js';
+import errorHandling, { AppError } from './errors/errorHandling.js';
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ app.use(helmet());
 
 app.use('/api', router);
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
-  const err = new CustomError(`Page ${req.originalUrl} does not exist`, 404);
+  const err = new AppError(`Page ${req.originalUrl} does not exist`, 404);
   next(err);
 });
 

@@ -5,6 +5,11 @@ import { validateToken, AuthenticatedRequest } from '../middleware/tokenValidati
 
 export const posts = Router();
 
+type Query = {
+  page: number;
+  limit: number;
+};
+
 //@ts-ignore
 posts.post('/create', validateToken, async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -18,7 +23,7 @@ posts.post('/create', validateToken, async (req: AuthenticatedRequest, res: Resp
 
 posts.get('/:id', async (req: Request, res: Response) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate('comments');
     if (!post) {
       return res.status(404).json(`Post does not exist!`);
     }
@@ -35,7 +40,7 @@ posts.put('/:id', validateToken, async (req: AuthenticatedRequest, res: Response
     if (!post) {
       return res.status(404).json(`Post does not exist!`);
     }
-    if (post.author !== req.user.id || req.user.role !== 'admin') {
+    if (post.author.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json('You can update only your posts!');
     }
     await Post.updateOne({
@@ -67,17 +72,23 @@ posts.post('/:id/like', validateToken, async (req: AuthenticatedRequest, res: Re
 });
 
 //@ts-ignore
-posts.get('/timeline', validateToken, async (req: AuthenticatedRequest, res: Response) => {
+posts.get('/timeline', validateToken, async (req: AuthenticatedRequest<{ query: Query }>, res: Response) => {
   try {
     const currentUser = await User.findById(req.user.id);
-
     //temporal solution(until token refresh implementation)
     if (!currentUser) {
       return res.status(403).json(`Please log in!`);
     }
-    const userPosts = await Post.find({ author: currentUser.id });
-    const friendsPosts = await Post.find({ author: { $in: currentUser.friends } });
-    res.json(userPosts.concat(...friendsPosts));
+
+    const { page = 1, limit = 20 } = req.query;
+
+    const friendsPosts = await Post.find({ author: { $in: currentUser.friends } })
+      .populate('comments')
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .sort({ CreatedAt: -1 }); //not sure if this line is necessary
+    const pagesCount = await Post.countDocuments({ author: { $in: currentUser.friends } });
+    return res.json({ friendsPosts, page: `${page} out of ${Math.ceil(pagesCount / limit)}` });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -90,12 +101,11 @@ posts.delete('/:id', validateToken, async (req: AuthenticatedRequest, res: Respo
     if (!post) {
       return res.status(404).json(`Post does not exist!`);
     }
-    if (post.author === req.user.id || req.user.role === 'admin') {
-      await post.deleteOne();
-      res.status(200).json('Account has been deleted');
-    } else {
+    if (post.author.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json('You can delete only your account!');
     }
+    await post.deleteOne();
+    return res.status(200).json('Account has been deleted');
   } catch (err) {
     return res.status(500).json(err);
   }

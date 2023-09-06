@@ -43,7 +43,7 @@ const UserSchema = new mongoose.Schema(
     },
     friends: {
       type: Array,
-      default: [],
+      default: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     },
     role: {
       type: String,

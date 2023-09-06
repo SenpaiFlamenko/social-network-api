@@ -21,7 +21,7 @@ users.get('/:id', async (req: Request, res: Response) => {
 //@ts-ignore
 users.put('/:id', validateToken, async (req: AuthenticatedRequest, res: Response) => {
   try {
-    if (req.params.id !== req.user.id || req.user?.role !== 'admin') {
+    if (req.params.id !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json('You can update only your account!');
     }
     if (req.body.password) {
@@ -38,14 +38,13 @@ users.put('/:id', validateToken, async (req: AuthenticatedRequest, res: Response
 
 //@ts-ignore
 users.delete('/:id', validateToken, async (req: AuthenticatedRequest, res: Response) => {
-  if (req.params.id === req.user.id || req.user.role === 'admin') {
-    try {
-      await User.findByIdAndDelete(req.params.id);
-      res.status(200).json('Account has been deleted');
-    } catch (err) {
-      return res.status(500).json(err);
+  try {
+    if (req.params.id !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json('You can delete only your account!');
     }
-  } else {
-    return res.status(403).json('You can delete only your account!');
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json('Account has been deleted');
+  } catch (err) {
+    return res.status(500).json(err);
   }
 });

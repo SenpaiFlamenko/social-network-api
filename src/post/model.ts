@@ -7,7 +7,7 @@ const PostSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    text: {
+    content: {
       type: String,
       max: 5000,
     },
@@ -15,12 +15,7 @@ const PostSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    comments: [
-      {
-        author: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
-        text: { type: String, max: 500 },
-      },
-    ],
+    comments: [{ type: mongoose.Types.ObjectId, ref: 'Comments', default: [] }],
   },
   { versionKey: false, timestamps: true },
 );

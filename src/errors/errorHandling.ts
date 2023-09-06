@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-export class CustomError extends Error {
+export class AppError extends Error {
   statusCode: number;
   status: string;
   isOperational: boolean;
