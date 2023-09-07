@@ -10,7 +10,7 @@ const secret = process.env.JWT_SECRET || 'secret';
 
 auth.post('/register', async (req: Request, res: Response) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, firstName, lastName, nickname } = req.body;
     //hash password
     const hashedPassword = await hashPassword(password);
 
@@ -19,6 +19,9 @@ auth.post('/register', async (req: Request, res: Response) => {
       username,
       email,
       password: hashedPassword,
+      firstName,
+      lastName,
+      nickname,
     });
 
     //save user and respond

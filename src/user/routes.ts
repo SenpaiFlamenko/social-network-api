@@ -5,14 +5,39 @@ import { hashPassword } from '../services/passwordHashing.js';
 
 export const users = Router();
 
+//@ts-ignore
+users.get('/search', async (req: Request, res: Response) => {
+  try {
+    const { text } = req.body;
+    const regex = new RegExp(text);
+
+    const users = await User.find(
+      {
+        $or: [
+          { username: { $regex: regex, $options: 'i' } },
+          { firstName: { $regex: regex, $options: 'i' } },
+          { lastName: { $regex: regex, $options: 'i' } },
+          { nickname: { $regex: regex, $options: 'i' } },
+        ],
+      },
+      { password: 0, email: 0, role: 0, updatedAt: 0 },
+    );
+    if (!users) {
+      return res.status(404).json(`Can't find anyone!`);
+    }
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 users.get('/:id', async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id, { password: 0, email: 0, role: 0, updatedAt: 0 });
     if (!user) {
       return res.status(404).json(`User does not exist!`);
     }
-    const { password, updatedAt, role, email, ...other } = user.toObject();
-    res.status(200).json(other);
+    res.status(200).json(user);
   } catch (err) {
     res.status(500).json(err);
   }
