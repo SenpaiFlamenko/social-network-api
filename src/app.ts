@@ -7,10 +7,21 @@ import mongoose from 'mongoose';
 import { router } from './router/index.js';
 import errorHandling, { AppError } from './errors/errorHandling.js';
 
+import https from 'https';
+import fs from 'fs';
+let key = fs.readFileSync('./tutorial.key', 'utf-8');
+let cert = fs.readFileSync('./tutorial.crt', 'utf-8');
+const parameters = {
+  key: key,
+  cert: cert,
+};
+
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
+
+https.createServer(parameters, app);
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost/development-social-network';
 mongoose.Promise = Promise;

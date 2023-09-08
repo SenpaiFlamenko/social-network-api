@@ -28,7 +28,6 @@ module.exports = {
   plugins: ['@typescript-eslint', 'eslint-comments', 'promise', 'import', 'prettier'],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-use-before-define': [
       'error',
       {

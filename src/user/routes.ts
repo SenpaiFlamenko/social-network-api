@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import User from './model.js';
 import { validateToken, AuthenticatedRequest } from '../middleware/tokenValidation.js';
-import { hashPassword } from '../services/passwordHashing.js';
+import { hashPassword } from '../utils/passwordHashing.js';
 
 export const users = Router();
 

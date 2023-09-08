@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import User from '../model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { hashPassword } from '../../services/passwordHashing.js';
+import { hashPassword } from '../../utils/passwordHashing.js';
 
 export const auth = Router();
 
