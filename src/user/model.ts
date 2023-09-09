@@ -41,10 +41,11 @@ const UserSchema = new mongoose.Schema(
       max: 24,
       default: '',
     },
-    friends: {
-      type: Array,
-      default: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+    picture: {
+      type: String,
+      default: '',
     },
+    friends: [{ type: mongoose.Types.ObjectId, ref: 'User', default: [] }],
     role: {
       type: String,
       default: Role.user,

@@ -3,10 +3,9 @@ import User from '../model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { hashPassword } from '../../utils/passwordHashing.js';
+import { jwtSecret } from '../../config/index.js';
 
 export const auth = Router();
-
-const secret = process.env.JWT_SECRET || 'secret';
 
 auth.post('/register', async (req: Request, res: Response) => {
   try {
@@ -59,7 +58,7 @@ auth.post('/login', async (req: Request, res: Response) => {
         username: user.username,
         role: user.role,
       },
-      secret,
+      jwtSecret,
       { expiresIn: '15m' },
     );
     res.status(200).cookie('access_token', accessToken, { httpOnly: true }).json('Logged in!');

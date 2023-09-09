@@ -40,9 +40,9 @@ social.post('/accept/:id', validateToken, async (req: AuthenticatedRequest, res:
     if (!requestedUser) {
       return res.status(404).json(`User does not exist!`);
     }
-    if (!currentUser.friends.includes(req.params.id)) {
-      await currentUser.updateOne({ $push: { friends: req.params.id } });
-      await requestedUser.updateOne({ $push: { friends: req.user.id } });
+    if (!currentUser.friends.includes(requestedUser.id)) {
+      await currentUser.updateOne({ $push: { friends: requestedUser.id } });
+      await requestedUser.updateOne({ $push: { friends: requestedUser.id } });
       return res.status(200).json('Friend added!');
     } else {
       return res.status(403).json('You are already friends with this user!');
@@ -78,9 +78,9 @@ social.delete('/removeFriend/:id', validateToken, async (req: AuthenticatedReque
     if (!requestedUser) {
       return res.status(404).json(`User does not exist!`);
     }
-    if (currentUser.friends.includes(req.params.id)) {
-      await currentUser.updateOne({ $pull: { friends: req.params.id } });
-      await requestedUser.updateOne({ $pull: { friends: req.user.id } });
+    if (currentUser.friends.includes(requestedUser.id)) {
+      await currentUser.updateOne({ $pull: { friends: requestedUser.id } });
+      await requestedUser.updateOne({ $pull: { friends: requestedUser.id } });
       return res.status(200).json('Friend removed!');
     } else {
       return res.status(403).json('You are not friends with this user!');

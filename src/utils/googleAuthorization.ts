@@ -1,11 +1,12 @@
 import fetch from 'node-fetch';
 import { AppError } from '../errors/errorHandling.js';
+import { googleClientId, googleRedirectURL, googleSecret } from '../config/index.js';
 
 export function getGoogleOAuthURL() {
   const rootUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
   const options = {
-    redirect_uri: process.env.GOOGLE_OAUTH_REDIRECT_URL as string,
-    client_id: process.env.GOOGLE_CLIENT_ID as string,
+    redirect_uri: googleRedirectURL,
+    client_id: googleClientId,
     access_type: 'offline',
     response_type: 'code',
     prompt: 'consent',
@@ -22,9 +23,9 @@ export async function getGoogleAuthTokens(code: string) {
   const url = 'https://accounts.google.com/o/oauth2/token';
   const requestData = new URLSearchParams({
     code,
-    client_id: process.env.GOOGLE_CLIENT_ID as string,
-    client_secret: process.env.GOOGLE_CLIENT_SECRET as string,
-    redirect_uri: process.env.GOOGLE_OAUTH_REDIRECT_URL as string,
+    client_id: googleClientId,
+    client_secret: googleSecret,
+    redirect_uri: googleRedirectURL,
     grant_type: 'authorization_code',
   });
 

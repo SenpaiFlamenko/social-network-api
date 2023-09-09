@@ -1,5 +1,5 @@
+import { mongoUri, port } from './config/index.js';
 import express, { Express, Request, Response, NextFunction } from 'express';
-import dotenv from 'dotenv';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
@@ -9,6 +9,7 @@ import errorHandling, { AppError } from './errors/errorHandling.js';
 
 import https from 'https';
 import fs from 'fs';
+
 let key = fs.readFileSync('./tutorial.key', 'utf-8');
 let cert = fs.readFileSync('./tutorial.crt', 'utf-8');
 const parameters = {
@@ -16,15 +17,10 @@ const parameters = {
   cert: cert,
 };
 
-dotenv.config();
-
 const app: Express = express();
-const port = process.env.PORT || 3000;
 
 https.createServer(parameters, app);
 
-const mongoUri = process.env.MONGO_URI || 'mongodb://localhost/development-social-network';
-mongoose.Promise = Promise;
 mongoose.connect(mongoUri);
 mongoose.connection.on('error', (error: Error) => console.log(error));
 mongoose.connection.once('open', () => console.log('Connected to database!'));

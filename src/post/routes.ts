@@ -83,7 +83,6 @@ posts.get('/timeline', validateToken, async (req: AuthenticatedRequest<{ query: 
     const { page = 1, limit = 20 } = req.query;
 
     const friendsPosts = await Post.find({ author: { $in: currentUser.friends } })
-      .populate('comments')
       .limit(limit)
       .skip((page - 1) * limit)
       .sort({ CreatedAt: -1 }); //not sure if this line is necessary
