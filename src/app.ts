@@ -10,11 +10,11 @@ import errorHandling, { AppError } from './errors/errorHandling.js';
 import https from 'https';
 import fs from 'fs';
 
-let key = fs.readFileSync('./tutorial.key', 'utf-8');
-let cert = fs.readFileSync('./tutorial.crt', 'utf-8');
+const key = fs.readFileSync('./tutorial.key', 'utf-8');
+const cert = fs.readFileSync('./tutorial.crt', 'utf-8');
 const parameters = {
-  key: key,
-  cert: cert,
+  key,
+  cert,
 };
 
 const app: Express = express();

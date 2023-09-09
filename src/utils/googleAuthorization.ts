@@ -4,7 +4,7 @@ import { googleClientId, googleRedirectURL, googleSecret } from '../config/index
 
 export function getGoogleOAuthURL() {
   const rootUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
-  const options = {
+  const options = new URLSearchParams({
     redirect_uri: googleRedirectURL,
     client_id: googleClientId,
     access_type: 'offline',
@@ -13,10 +13,9 @@ export function getGoogleOAuthURL() {
     scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'].join(
       ' ',
     ),
-  };
+  });
 
-  const qs = new URLSearchParams(options);
-  return `${rootUrl}?${qs.toString()}`;
+  return `${rootUrl}?${options.toString()}`;
 }
 
 export async function getGoogleAuthTokens(code: string) {

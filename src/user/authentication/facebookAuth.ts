@@ -1,10 +1,10 @@
 import { Request, Response, Router } from 'express';
-import { getGoogleOAuthURL, getGoogleAuthTokens, getGoogleUser } from '../../utils/googleAuthorization.js';
+import { getFacebookOAuthURL, getFacebookAuthToken, getFacebookUser } from '../../utils/facebookAuthorization.js';
 import User from '../model.js';
 import jwt from 'jsonwebtoken';
 import { jwtSecret } from '../../config/index.js';
 
-export const googleAuth = Router();
+export const facebookAuth = Router();
 
 // interface GoogleUser {
 //   email: string;
@@ -14,29 +14,27 @@ export const googleAuth = Router();
 //   picture?: string;
 // }
 
-googleAuth.get('/', async (req: Request, res: Response) => {
-  res.redirect(getGoogleOAuthURL());
+facebookAuth.get('/', async (req: Request, res: Response) => {
+  res.redirect(getFacebookOAuthURL());
 });
 
-googleAuth.get('/callback', async (req: Request, res: Response) => {
+facebookAuth.get('/callback', async (req: Request, res: Response) => {
   try {
-    const { id_token, access_token } = await getGoogleAuthTokens(req.query.code as string);
-    console.log('Id Token:', id_token);
-    console.log('Access Token:', access_token);
+    const { access_token } = await getFacebookAuthToken(req.query.code as string);
     //fix this any!
-    const googleUser: any = await getGoogleUser(id_token, access_token);
+    const facebookUser: any = await getFacebookUser(access_token);
 
     const user = await User.findOneAndUpdate(
       {
-        email: googleUser.email,
+        email: facebookUser.email,
       },
       {
         $setOnInsert: {
-          email: googleUser.email,
-          username: googleUser.email.split('@')[0],
-          firstName: googleUser.given_name,
-          lastName: googleUser.family_name,
-          picture: googleUser.picture,
+          email: facebookUser.email,
+          username: facebookUser.email.split('@')[0],
+          firstName: facebookUser.first_name,
+          lastName: facebookUser.last_name,
+          picture: facebookUser.picture.data.url,
         },
       },
       {
