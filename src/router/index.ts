@@ -4,7 +4,7 @@ import { auth } from '../user/authentication/authentication.js';
 import { users } from '../user/routes.js';
 import { social } from '../user/social/routes.js';
 import { posts } from '../post/routes.js';
-import { comments } from '../post/comments/routes.js';
+import { comments } from '../post/comments/index.js';
 import { googleAuth } from '../user/authentication/googleAuth.js';
 import { facebookAuth } from '../user/authentication/facebookAuth.js';
 

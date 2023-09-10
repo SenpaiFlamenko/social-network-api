@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { AppError } from '../errors/errorHandling.js';
+import { AppError } from './errors/errorHandling.js';
 import { facebookClientId, facebookRedirectURL, facebookSecret } from '../config/index.js';
 
 export function getFacebookOAuthURL() {

@@ -1,8 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { getFacebookOAuthURL, getFacebookAuthToken, getFacebookUser } from '../../utils/facebookAuthorization.js';
 import User from '../model.js';
-import jwt from 'jsonwebtoken';
-import { jwtSecret } from '../../config/index.js';
+import { createAccessToken } from '../../utils/sessions.js';
 
 export const facebookAuth = Router();
 
@@ -43,15 +42,8 @@ facebookAuth.get('/callback', async (req: Request, res: Response) => {
       },
     );
 
-    const accessToken = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        role: user.role,
-      },
-      jwtSecret,
-      { expiresIn: '15m' },
-    );
+    const accessToken = createAccessToken(user.id, user.username, user.role);
+
     res.status(200).cookie('access_token', accessToken, { httpOnly: true }).json('Logged in!');
   } catch (error) {
     res.status(500).json(error);

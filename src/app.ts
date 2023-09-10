@@ -5,10 +5,14 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import { router } from './router/index.js';
-import errorHandling, { AppError } from './errors/errorHandling.js';
+import globalErrorHandler, { AppError } from './utils/errors/errorHandling.js';
 
 import https from 'https';
 import fs from 'fs';
+
+process.on('unhandledException', (error: any) => {
+  console.log(error.name, error.message);
+});
 
 const key = fs.readFileSync('./tutorial.key', 'utf-8');
 const cert = fs.readFileSync('./tutorial.crt', 'utf-8');
@@ -36,7 +40,7 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
   next(err);
 });
 
-app.use(errorHandling);
+app.use(globalErrorHandler);
 
 app.listen(port, () => {
   console.log(`server is running on port: ${port}`);
