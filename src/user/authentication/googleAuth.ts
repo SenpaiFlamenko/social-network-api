@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { getGoogleOAuthURL, getGoogleAuthTokens, getGoogleUser } from '../../utils/googleAuthorization.js';
 import User from '../model.js';
 import { createAccessToken } from '../../utils/sessions.js';
@@ -17,7 +17,7 @@ googleAuth.get('/', async (req: Request, res: Response) => {
   res.redirect(getGoogleOAuthURL());
 });
 
-googleAuth.get('/callback', async (req: Request, res: Response) => {
+googleAuth.get('/callback', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id_token, access_token } = await getGoogleAuthTokens(req.query.code as string);
     console.log('Id Token:', id_token);
@@ -47,6 +47,6 @@ googleAuth.get('/callback', async (req: Request, res: Response) => {
     const accessToken = createAccessToken(user.id, user.username, user.role);
     res.status(200).cookie('access_token', accessToken, { httpOnly: true }).json('Logged in!');
   } catch (error) {
-    res.status(500).json(error);
+    next(error);
   }
 });

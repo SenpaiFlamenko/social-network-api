@@ -13,7 +13,7 @@ export default async (req: AuthenticatedRequest, res: Response, next: NextFuncti
     const comment = await newComment.save();
     await post.updateOne({ $push: { comments: comment } });
 
-    return res.status(200).json(`Comment to post ${req.params.id} was successfully added!`);
+    return res.status(201).json(`Comment to post ${req.params.id} was successfully added!`);
   } catch (err) {
     next(err);
   }

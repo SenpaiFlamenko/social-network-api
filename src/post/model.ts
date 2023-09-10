@@ -15,6 +15,7 @@ const PostSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    picture: { type: String, default: '' },
     comments: [{ type: mongoose.Types.ObjectId, ref: 'Comments', default: [] }],
   },
   { versionKey: false, timestamps: true },

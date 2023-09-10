@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { getFacebookOAuthURL, getFacebookAuthToken, getFacebookUser } from '../../utils/facebookAuthorization.js';
 import User from '../model.js';
 import { createAccessToken } from '../../utils/sessions.js';
@@ -17,7 +17,7 @@ facebookAuth.get('/', async (req: Request, res: Response) => {
   res.redirect(getFacebookOAuthURL());
 });
 
-facebookAuth.get('/callback', async (req: Request, res: Response) => {
+facebookAuth.get('/callback', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { access_token } = await getFacebookAuthToken(req.query.code as string);
     //fix this any!
@@ -46,6 +46,6 @@ facebookAuth.get('/callback', async (req: Request, res: Response) => {
 
     res.status(200).cookie('access_token', accessToken, { httpOnly: true }).json('Logged in!');
   } catch (error) {
-    res.status(500).json(error);
+    next(error);
   }
 });
