@@ -16,5 +16,4 @@ router.use('/auth/google', googleAuth);
 router.use('/auth/facebook', facebookAuth);
 router.use('/id', users);
 router.use('/social', social);
-router.use('/posts', posts);
-router.use('/posts', comments);
+router.use('/posts', posts, comments);

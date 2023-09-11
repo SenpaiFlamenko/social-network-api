@@ -25,7 +25,7 @@ export default async (req: AuthenticatedRequest<{ query: Query }>, res: Response
       .sort({ CreatedAt: -1 }); //not sure if this line is necessary
     const pagesCount = await Post.countDocuments({ author: { $in: currentUser.friends } });
 
-    return res.json({ friendsPosts, page: `${page} out of ${Math.ceil(pagesCount / limit)}` });
+    return res.json({ friendsPosts, page: `${pagesCount > 0 ? page : 0} out of ${Math.ceil(pagesCount / limit)}` });
   } catch (err) {
     next(err);
   }

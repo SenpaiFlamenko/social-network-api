@@ -36,7 +36,6 @@ export async function getFacebookAuthToken(code: string) {
   // const response = await fetch(url, options);
   const tokenUrl = `https://graph.facebook.com/v17.0/oauth/access_token?client_id=${facebookClientId}&redirect_uri=${facebookRedirectURL}&client_secret=${facebookSecret}&code=${code}`;
   const response = await fetch(tokenUrl);
-  console.log(response);
 
   if (response.ok) {
     //need to fix this "any" later

@@ -23,7 +23,4 @@ export const validateRegister = [
   bodyStringOptional('picture'),
 ];
 
-export const validateLogin = [
-  bodyStringExist('email').matches(emailRegex),
-  bodyStringExist('password').matches(passwordRegex),
-];
+export const validateLogin = [bodyStringExist('email').matches(emailRegex), bodyStringExist('password')];

@@ -13,12 +13,12 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export const validateToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  const token = req.cookies.access_token;
-  if (!token) {
-    throw new AppError('User is not authorized or token is missing!', ErrorCode.unauthorized);
-  }
-
   try {
+    const token = req.cookies.access_token;
+    if (!token) {
+      throw new AppError('User is not authorized or token is missing!', ErrorCode.unauthorized);
+    }
+
     jwt.verify(token, jwtSecret, (err: any, user: any) => {
       if (err) {
         throw new AppError('User is not authorized!', ErrorCode.forbidden);

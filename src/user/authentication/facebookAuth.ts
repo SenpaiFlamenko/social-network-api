@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { getFacebookOAuthURL, getFacebookAuthToken, getFacebookUser } from '../../utils/facebookAuthorization.js';
 import User from '../model.js';
 import { generateAccessToken } from '../../utils/sessions.js';
+import { env } from '../../config/index.js';
 
 export const facebookAuth = Router();
 
@@ -44,7 +45,10 @@ facebookAuth.get('/callback', async (req: Request, res: Response, next: NextFunc
 
     const accessToken = generateAccessToken(user.id, user.username, user.role);
 
-    res.status(200).cookie('access_token', accessToken, { httpOnly: true }).json('Logged in!');
+    res
+      .status(200)
+      .cookie('access_token', accessToken, { httpOnly: true, secure: env === 'production' })
+      .json('Logged in!');
   } catch (error) {
     next(error);
   }

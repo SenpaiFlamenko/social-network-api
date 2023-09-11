@@ -14,16 +14,16 @@ export const posts = Router();
 //@ts-ignore
 posts.post('/create', validateToken, validate(validateCreate), create);
 
+//@ts-ignore
+posts.get('/timeline', validateToken, validate(validatePaginationQuery), timeline);
+
 posts.get('/:id', show);
 
 //@ts-ignore
 posts.put('/:id', validateToken, validate(validateUpdate), update);
 
 //@ts-ignore
-posts.post('/:id/like', validateToken, like);
-
-//@ts-ignore
-posts.get('/timeline', validateToken, validate(validatePaginationQuery), timeline);
-
-//@ts-ignore
 posts.delete('/:id', validateToken, remove);
+
+//@ts-ignore
+posts.post('/:id/like', validateToken, like);
