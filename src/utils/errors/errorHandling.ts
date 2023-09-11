@@ -27,7 +27,7 @@ export class AppError extends Error {
 }
 
 const castErrorHandler = (error: any) => {
-  const message = `Invalid value ${error.path} for field ${error.value}`;
+  const message = `Invalid value ${error.value} for field ${error.path}`;
 
   return new AppError(message, ErrorCode.badRequest);
 };

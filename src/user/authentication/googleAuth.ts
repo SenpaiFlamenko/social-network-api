@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { getGoogleOAuthURL, getGoogleAuthTokens, getGoogleUser } from '../../utils/googleAuthorization.js';
 import User from '../model.js';
-import { createAccessToken } from '../../utils/sessions.js';
+import { generateAccessToken } from '../../utils/sessions.js';
 
 export const googleAuth = Router();
 
@@ -44,7 +44,7 @@ googleAuth.get('/callback', async (req: Request, res: Response, next: NextFuncti
       },
     );
 
-    const accessToken = createAccessToken(user.id, user.username, user.role);
+    const accessToken = generateAccessToken(user.id, user.username, user.role);
     res.status(200).cookie('access_token', accessToken, { httpOnly: true }).json('Logged in!');
   } catch (error) {
     next(error);

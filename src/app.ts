@@ -7,23 +7,11 @@ import mongoose from 'mongoose';
 import { router } from './router/index.js';
 import globalErrorHandler, { AppError } from './utils/errors/errorHandling.js';
 
-import https from 'https';
-import fs from 'fs';
-
 process.on('unhandledException', (error: any) => {
   console.log(error.name, error.message);
 });
 
-const key = fs.readFileSync('./tutorial.key', 'utf-8');
-const cert = fs.readFileSync('./tutorial.crt', 'utf-8');
-const parameters = {
-  key,
-  cert,
-};
-
 const app: Express = express();
-
-https.createServer(parameters, app);
 
 mongoose.connect(mongoUri);
 mongoose.connection.on('error', (error: Error) => console.log(error));

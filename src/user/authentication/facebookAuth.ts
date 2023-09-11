@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { getFacebookOAuthURL, getFacebookAuthToken, getFacebookUser } from '../../utils/facebookAuthorization.js';
 import User from '../model.js';
-import { createAccessToken } from '../../utils/sessions.js';
+import { generateAccessToken } from '../../utils/sessions.js';
 
 export const facebookAuth = Router();
 
@@ -42,7 +42,7 @@ facebookAuth.get('/callback', async (req: Request, res: Response, next: NextFunc
       },
     );
 
-    const accessToken = createAccessToken(user.id, user.username, user.role);
+    const accessToken = generateAccessToken(user.id, user.username, user.role);
 
     res.status(200).cookie('access_token', accessToken, { httpOnly: true }).json('Logged in!');
   } catch (error) {
